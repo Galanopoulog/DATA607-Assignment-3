@@ -1,0 +1,119 @@
+---
+title: "Assignment 3"
+author: "Georgia Galanopoulos"
+date: "February 19, 2017"
+output: html_document
+---
+
+##**Exercise 3**
+```{r}
+library(stringr)
+
+raw.data = "555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+
+```
+
+
+**3 part 1**
+*Rearrange vector to look like first_name last_name *
+```{r}
+name = unlist(str_extract_all(raw.data, "[[:alpha:]., ]{2,}"))
+name
+name_order = gsub(" [A-Z]{1}\\. " , " " , name)
+first_last = gsub("(\\w+),\\s(\\w+)", "\\2 \\1", name_order)
+first_last
+```
+
+
+**3 part 2**
+*Create logical vector indicating title (Rev or Dr) *
+```{r}
+title = unlist(str_detect(name,"[[:alpha:]]{2,}[.]"))
+data.frame(first_last,title)
+```
+
+
+**3 part 3** *Create logical vector indicating if second name? *
+```{r}
+name_two = str_detect(name," [A-z]{1}\\. ")
+data.frame(name, first_last, title, name_two)
+```
+
+##**Exercise 4**
+
+*Describe the types of strings. Below I have constructed examples for the given expressions involving passwords and determining if the criteria from each string allow each password to hold.*
+
+
+**4 part 1**
+*[0-9]+\\$*
+
+String containing a pattern of one or more numbers with a dollar sign
+```{r}
+passwords = c("3Ccwk4DRd", "KXX7$GUxm.txt", "fHk$FgWEF", "3w8zm4Xs", "D98$EAcHw")
+hold = str_detect(passwords, "[0-9]+\\$")
+data.frame(passwords, hold)
+```
+
+
+**4 part 2**
+*\\b[a-z]{1,4}\\b*
+
+String containing up to four lower case letters, so long as those lower case letters are word edges
+```{r}
+passwords = c("3C.cwk.4DRd", "3w8zm4Xs", "V386$h68A", "wrCyQQcw")
+hold = str_detect(passwords, "\\b[a-z]{1,4}\\b")
+data.frame(passwords, hold)
+```
+
+
+**4 part 3**
+.*?\\txt$ 
+
+String pattern ending in ".txt"
+```{r}
+hold = str_detect(passwords, ".*?\\.txt$")
+data.frame(passwords, hold)
+```
+
+
+**4 part 4**
+*\\d{2}/\\d{2}/\\d{4}*
+
+String containing pattern of two digits followed by a front slash, two more digits, another front slash and finally four digits.
+```{r}
+passwords = c("02\02\0202", "45689587", "56/85/1538", "87-98-4585")
+hold = str_detect(passwords, "\\d{2}/\\d{2}/\\d{4}")
+data.frame(passwords, hold)
+```
+
+
+**4 part 5**
+*<(.+?)>.+?</\\1>*
+
+String pattern containing tags.
+
+```{r}
+passwords = c("<nope>yep</no>", "KXX7$GUxm.txt", "<tag>hi</tag>", "fHk$FgWEF")
+hold = str_detect(passwords, "<(.+?)>.+?</\\1>")
+data.frame(passwords, hold)
+```
+
+
+
+##**Exercise 9**
+
+*Crack the code.*
+```{r}
+code = "clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0TanwoUwisdij7Lj8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigOd6vrfUrbz2.2bkAnbhzgv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr"
+
+cracked = unlist(str_extract_all(code, "[[A-Z].!]"))
+paste(cracked, collapse = "")
+```
+
+
+*Answer to the code.*
+```{r}
+newcode = "clcopTow1zmstc0d87wnkig7HvdicpIuggvhryn92Sjuwczi8hqrfp.xs5Ij5dwpn0Sanwo.wisdij7Tj8kpf03HE5.dr3coc0bt7yczjatCaootj55t3Oj3ne6c4OfekLr1w1EwwojigSd6vrfTrbz2.2bkEnbhzgv4X9i05zTcropRwAgnb.CqoR65fEa1otfb7wDm24k6t3sI9zqe5fy89n6Td5t9kc4f!905gmc4gxo5nhkgr"
+RosettaStone = unlist(str_extract_all(newcode, "[[:upper:].!]"))
+answer = paste(RosettaStone, collapse = "")
+```
